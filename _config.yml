@@ -1,0 +1,66 @@
+# GitHub Pages Configuration
+title: BeastMasterLOM
+description: Мастер зверей - руководство по игре Legend of Mushrooms
+author: BeastMasterLOM Team
+email: contact@beastmasterlom.com
+
+# Site settings
+baseurl: ""
+url: "https://yarikmmm.github.io/BeastMasterLOM"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+# Navigation
+navigation:
+  - title: Главная
+    url: /
+  - title: О нас
+    url: /#about
+  - title: Возможности
+    url: /#features
+  - title: Контакты
+    url: /#contact
+
+# Social links
+social:
+  github: yarikmmm
+  discord: yourdiscord
+  twitter: yourtwitter
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .git
+  - .gitignore
+
+# Include files
+include:
+  - _redirects
+
+# Collections
+collections:
+  posts:
+    output: true
+    permalink: /:categories/:year/:month/:day/:title/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      author: "BeastMasterLOM Team"

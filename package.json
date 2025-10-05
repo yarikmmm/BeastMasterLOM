@@ -1,0 +1,38 @@
+{
+  "name": "beastmasterlom",
+  "version": "1.0.0",
+  "description": "BeastMasterLOM - Мастер зверей для Lords of Magic",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server . -p 3000 -o",
+    "build": "echo 'Static site - no build required'",
+    "deploy": "npx gh-pages -d . -b gh-pages --repo https://github.com/yarikmmm/BeastMasterLOM.git",
+    "deploy:develop": "npx gh-pages -d . -b gh-pages --repo https://github.com/yarikmmm/BeastMasterLOM.git",
+    "serve": "npx http-server . -p 8080"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yarikmmm/BeastMasterLOM.git"
+  },
+  "keywords": [
+    "legend-of-mushrooms",
+    "beast-master",
+    "game-guide",
+    "strategy",
+    "mushrooms",
+    "fantasy"
+  ],
+  "author": "BeastMasterLOM Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yarikmmm/BeastMasterLOM/issues"
+  },
+  "homepage": "https://yarikmmm.github.io/BeastMasterLOM",
+  "devDependencies": {
+    "gh-pages": "^6.0.0",
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
