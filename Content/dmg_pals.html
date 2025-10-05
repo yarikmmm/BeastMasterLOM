@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legend of Mushroom Character Simulator</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .calculator-container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-title {
+            text-align: center;
+            margin: 0 auto 2rem auto;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            max-width: 800px;
+        }
+        
+        .form-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .input-group.hidden {
+            display: none;
+        }
+        
+        .field-group {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .groups-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .groups-container .field-group:last-child {
+            grid-column: 1 / -1;
+        }
+        
+        @media (max-width: 768px) {
+            .groups-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .field-group h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .input-group label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        
+        .input-group input,
+        .input-group textarea {
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .input-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .pals-table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+        
+        .pals-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pals-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .pals-table td {
+            padding: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .pals-table input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .pals-table input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+        }
+        
+        .add-pal-btn {
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .add-pal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .remove-pal-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .remove-pal-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .number-format-display {
+            font-size: 0.8rem;
+            color: #667eea;
+            font-weight: 600;
+            margin-top: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 5px;
+            text-align: center;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+        
+        .manual-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #667eea;
+        }
+        
+        .manual-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .manual-content {
+            color: #4b5563;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        .manual-content strong {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .calculate-btn {
+            width: 300px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .results-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .result-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .result-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-description {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        
+        .total-damage {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .total-damage h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .total-damage-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <h1 class="main-title">
+            Legend of Mushroom Awakening & Soul Simulator
+        </h1>
+        
+        <div class="manual-section">
+            <div class="manual-title">
+                <i class="fas fa-info-circle"></i>
+                Инструкция по использованию
+            </div>
+            <div class="manual-content">
+                Для использования калькулятора вам нужно <strong>сбросить в игре души</strong> на <strong>Атаку, Крит урон петов, Урон петов</strong> (оставив все остальные как вы хотите), тоже самое сделать в <strong>Печатях</strong>. После этого посмотреть сколько у вас свободных осколков душ и скроллов, какой крит урон палов, впишите эти значения в нужные поля. Для <strong>PvE</strong> enemy defence выставляйте меньше миллиона, для <strong>PvP</strong> выставляйте реальные значения.
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h2 class="section-title">Параметры персонажа</h2>
+            <form id="inputForm" onsubmit="return false;">
+                <!-- Скрытые поля -->
+                <input type="hidden" id="hp" value="12825800">
+                <input type="hidden" id="def" value="33332">
+                <input type="hidden" id="atk_spd" value="2.8">
+                <input type="hidden" id="base_hp" value="1057600">
+                <input type="hidden" id="global_hp" value="223.07">
+                <input type="hidden" id="base_def" value="1094000">
+                <input type="hidden" id="global_def" value="340.96">
+                <input type="hidden" id="base_atk_spd" value="15">
+                <input type="hidden" id="pal_ignore_evasion" value="51.90">
+                <input type="hidden" id="pal_combo_multi" value="100">
+                <input type="hidden" id="atk_soul_atk" value="20.3">
+                <input type="hidden" id="counter_soul_pal_dmg" value="45.15">
+                <input type="hidden" id="crit_res_soul_pal_crit" value="120.4">
+                <input type="hidden" id="atk_seal" value="15">
+                <input type="hidden" id="pal_dmg_seal" value="45">
+                <input type="hidden" id="pal_crit_seal" value="45">
+                
+                <div class="groups-container">
+                    <!-- Группа "Персонаж" -->
+                    <div class="field-group">
+                        <h3>👤 Персонаж</h3>
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label for="atk">Атака (ATK):</label>
+                                <input type="number" id="atk" value="91060">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="base_atk">Базовая атака (Base_ATK):</label>
+                                <input type="number" id="base_atk" value="1149800">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="global_atk">Глобальная атака (Global_ATK):</label>
+                                <input type="number" id="global_atk" value="364.45" step="0.01">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="pal_dmg">Урон прислужников (Pal_DMG):</label>
+                                <input type="number" id="pal_dmg" value="1813">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="pal_crit_rate">Шанс критического удара прислужников (Pal_Crit_Rate):</label>
+                                <input type="number" id="pal_crit_rate" value="90.92" step="0.01">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="pal_combo_rate">Шанс комбо прислужников (Pal_Combo_Rate):</label>
+                                <input type="number" id="pal_combo_rate" value="88.90" step="0.01">
+                            </div>
+                            
+                            <div class="input-group" style="grid-column: 1 / -1;">
+                                <label for="pals">Прислужники (Pals):</label>
+                                <div class="pals-table-container">
+                                    <table class="pals-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Имя пета</th>
+                                                <th>Урон</th>
+                                                <th>Скорость атаки</th>
+                                                <th>Крит урон</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="palsTableBody">
+                                            <tr>
+                                                <td><input type="text" value="AggHydrosprite" class="pal-name"></td>
+                                                <td><input type="number" value="19.4993" step="0.0001" class="pal-damage"></td>
+                                                <td><input type="number" value="1.16" step="0.01" class="pal-speed"></td>
+                                                <td><input type="number" value="5131.33" step="0.01" class="pal-crit"></td>
+                                                <td><button type="button" class="remove-pal-btn" onclick="removePalRow(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button></td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="text" value="TriHydrosprite" class="pal-name"></td>
+                                                <td><input type="number" value="20.8114" step="0.0001" class="pal-damage"></td>
+                                                <td><input type="number" value="1.16" step="0.01" class="pal-speed"></td>
+                                                <td><input type="number" value="5131.33" step="0.01" class="pal-crit"></td>
+                                                <td><button type="button" class="remove-pal-btn" onclick="removePalRow(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button></td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="text" value="DivineDeer" class="pal-name"></td>
+                                                <td><input type="number" value="18.7178" step="0.0001" class="pal-damage"></td>
+                                                <td><input type="number" value="1.23" step="0.01" class="pal-speed"></td>
+                                                <td><input type="number" value="5131.33" step="0.01" class="pal-crit"></td>
+                                                <td><button type="button" class="remove-pal-btn" onclick="removePalRow(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button></td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="text" value="MossSnail" class="pal-name"></td>
+                                                <td><input type="number" value="25.9986" step="0.0001" class="pal-damage"></td>
+                                                <td><input type="number" value="0.94" step="0.01" class="pal-speed"></td>
+                                                <td><input type="number" value="5131.33" step="0.01" class="pal-crit"></td>
+                                                <td><button type="button" class="remove-pal-btn" onclick="removePalRow(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button></td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="text" value="IceSnail" class="pal-name"></td>
+                                                <td><input type="number" value="26.4403" step="0.0001" class="pal-damage"></td>
+                                                <td><input type="number" value="0.94" step="0.01" class="pal-speed"></td>
+                                                <td><input type="number" value="5131.33" step="0.01" class="pal-crit"></td>
+                                                <td><button type="button" class="remove-pal-btn" onclick="removePalRow(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button></td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="text" value="MoonHound" class="pal-name"></td>
+                                                <td><input type="number" value="7.0092" step="0.0001" class="pal-damage"></td>
+                                                <td><input type="number" value="1.45" step="0.01" class="pal-speed"></td>
+                                                <td><input type="number" value="5131.33" step="0.01" class="pal-crit"></td>
+                                                <td><button type="button" class="remove-pal-btn" onclick="removePalRow(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button type="button" class="add-pal-btn" onclick="addPalRow()">
+                                        <i class="fas fa-plus"></i> Добавить прислужника
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Группа "Враг" -->
+                    <div class="field-group">
+                        <h3>👹 Враг</h3>
+                        <div class="form-grid">
+                        <div class="input-group">
+                            <label for="enemy_def">Защита врага (Enemy_DEF):</label>
+                            <input type="number" id="enemy_def" value="2500" placeholder="Введите число">
+                            <div class="number-format-display" id="enemy_def_format">2.5K</div>
+                        </div>
+                            
+                            <div class="input-group">
+                                <label for="enemy_pal_res">Сопротивление прислужникам врага (Enemy_Pal_RES):</label>
+                                <input type="number" id="enemy_pal_res" value="80">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="enemy_res">Сопротивление врага (Enemy_RES):</label>
+                                <input type="number" id="enemy_res" value="40">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="enemy_ignore_combo">Игнорирование комбо врага (Enemy_Ignore_Combo):</label>
+                                <input type="number" id="enemy_ignore_combo" value="50">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="enemy_ignore_crit">Игнорирование критических ударов врага (Enemy_Ignore_Crit):</label>
+                                <input type="number" id="enemy_ignore_crit" value="0">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="enemy_crit_res">Критическое сопротивление врага (Enemy_Crit_RES):</label>
+                                <input type="number" id="enemy_crit_res" value="3000">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Группа "Настройки" -->
+                    <div class="field-group">
+                        <h3>⚙️ Настройки</h3>
+                        <div class="form-grid">
+                        <div class="input-group">
+                            <label for="soul_points">Очки душ (Soul Points):</label>
+                            <input type="number" id="soul_points" value="1690000" placeholder="Введите число">
+                            <div class="number-format-display" id="soul_points_format">1.69M</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="seal_points">Очки печатей (Seal Points):</label>
+                            <input type="number" id="seal_points" value="9200" placeholder="Введите число">
+                            <div class="number-format-display" id="seal_points_format">9.2K</div>
+                        </div>
+                            
+                            <div class="input-group">
+                                <label for="battle_time">Время боя в секундах (Battle Time):</label>
+                                <input type="number" id="battle_time" value="60">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+    </form>
+        </div>
+        
+        <div style="text-align: center; margin: 2rem 0; width: 100%;">
+            <button type="button" class="calculate-btn" onclick="calculate()">
+                <i class="fas fa-calculator"></i>
+                Рассчитать оптимальное распределение
+            </button>
+        </div>
+        
+        <div class="results-section">
+            <h2 class="section-title">Результаты расчета</h2>
+            <div id="output">
+                <p style="text-align: center; color: #6b7280; font-style: italic;">
+                    Нажмите кнопку "Рассчитать" для получения результатов
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            // Безопасное получение значений с проверкой на существование элементов
+            const getValue = (id, defaultValue = 0) => {
+                const element = document.getElementById(id);
+                return element ? parseFloat(element.value) || defaultValue : defaultValue;
+            };
+            
+            const hp = getValue('hp', 12825800);
+            const atk = getValue('atk', 91060);
+            const def = getValue('def', 33332);
+            const atk_spd = getValue('atk_spd', 2.8);
+            const base_hp = getValue('base_hp', 1057600);
+            const global_hp = getValue('global_hp', 223.07);
+            const base_atk = getValue('base_atk', 1149800);
+            const global_atk = getValue('global_atk', 364.45);
+            const base_def = getValue('base_def', 1094000);
+            const global_def = getValue('global_def', 340.96);
+            const base_atk_spd = getValue('base_atk_spd', 15);
+            const pal_dmg = getValue('pal_dmg', 1813);
+            const pal_crit_rate = getValue('pal_crit_rate', 90.92);
+            const pal_combo_rate = getValue('pal_combo_rate', 88.90);
+            const pal_ignore_evasion = getValue('pal_ignore_evasion', 51.90);
+            const pal_combo_multi = getValue('pal_combo_multi', 100);
+            
+            // Получаем данные из таблицы прислужников
+            let current_soul_atk = getValue('atk_soul_atk', 20.3);
+            let current_soul_counter = getValue('counter_soul_pal_dmg', 45.15);
+            let current_soul_crit = getValue('crit_res_soul_pal_crit', 120.4);
+            let current_seal_atk = getValue('atk_seal', 15);
+            let current_seal_pal_dmg = getValue('pal_dmg_seal', 45);
+            let current_seal_pal_crit = getValue('pal_crit_seal', 45);
+            const enemy_def = getValue('enemy_def', 2500);
+            const enemy_pal_res = getValue('enemy_pal_res', 80);
+            const enemy_res = getValue('enemy_res', 40);
+            const enemy_ignore_combo = getValue('enemy_ignore_combo', 50);
+            const enemy_ignore_crit = getValue('enemy_ignore_crit', 0);
+            const enemy_crit_res = getValue('enemy_crit_res', 3000);
+            let soul_points_remaining = getValue('soul_points', 1690000);
+            let seal_points_remaining = getValue('seal_points', 9200);
+            const battle_time = getValue('battle_time', 60);
+            const pals = [];
+            // Получаем данные из таблицы прислужников
+            const tableRows = document.querySelectorAll('#palsTableBody tr');
+            for (let row of tableRows) {
+                const nameInput = row.querySelector('.pal-name');
+                const damageInput = row.querySelector('.pal-damage');
+                const speedInput = row.querySelector('.pal-speed');
+                const critInput = row.querySelector('.pal-crit');
+                
+                if (nameInput && damageInput && speedInput && critInput) {
+                    const name = nameInput.value.trim();
+                    const damage = parseFloat(damageInput.value) || 0;
+                    const speed = parseFloat(speedInput.value) || 0;
+                    const crit = parseFloat(critInput.value) || 0;
+                    
+                    if (name) {
+                    pals.push({
+                            name: name,
+                            multi: damage,
+                            spd: speed,
+                            crit_dmg: crit,
+                            lvl: 1 // Уровень не используется в расчетах
+                        });
+                    }
+                }
+            }
+            
+            // Если нет прислужников в таблице, используем значения по умолчанию
+            if (pals.length === 0) {
+                pals.push({
+                    name: "DefaultPal",
+                    multi: 19.4993,
+                    spd: 1.16,
+                    crit_dmg: 5131.33,
+                    lvl: 1
+                });
+            }
+            let sum_spd_multi = 0;
+            let pal_crit_dmg = pals.length > 0 ? pals[0].crit_dmg : 5131.33;
+            for (let pal of pals) {
+                sum_spd_multi += pal.spd * pal.multi;
+            }
+            let p_combo = Math.max(0, (pal_combo_rate - enemy_ignore_combo) / 100);
+            let p_crit = Math.max(0, (pal_crit_rate - enemy_ignore_crit) / 100);
+            let soul_atk_level = 1;
+            let soul_counter_level = 1;
+            let soul_crit_level = 1;
+            let seal_atk_level = 1;
+            let seal_pal_dmg_level = 1;
+            let seal_pal_crit_level = 1;
+            function get_final_atk(s_atk, s_seal) {
+                const add_atk = global_atk + s_atk + s_seal;
+                return atk * (1 + base_atk / 100) * (1 + add_atk / 100);
+            }
+            function get_objective(s_atk, s_seal, s_counter, s_pal_dmg, s_crit, s_pal_crit) {
+                const final_atk = get_final_atk(s_atk, s_seal);
+                const effective_atk = Math.max(0, final_atk - enemy_def);
+                const effective_pal_dmg = pal_dmg + s_counter + s_pal_dmg;
+                const factor = (pal_crit_dmg + 2.5 * (s_crit + s_pal_crit)) / enemy_crit_res;
+                const enhance = 1 + p_crit * (factor - 1);
+                return effective_atk * effective_pal_dmg * enhance;
+            }
+            function get_total_damage(s_atk, s_seal, s_counter, s_pal_dmg, s_crit, s_pal_crit) {
+                const final_atk = get_final_atk(s_atk, s_seal);
+                const effective_atk = Math.max(0, final_atk - enemy_def);
+                const effective_pal_dmg = pal_dmg + s_counter + s_pal_dmg;
+                const k = effective_atk * (1.15 / 100 * effective_pal_dmg) * (1 - enemy_pal_res / 100) * (1 - enemy_res / 100);
+                const factor = (pal_crit_dmg + 2.5 * (s_crit + s_pal_crit)) / enemy_crit_res;
+                const enhance = 1 + p_crit * (factor - 1);
+                const expected_common = k * enhance * (1 + p_combo);
+                const total_dps = expected_common * sum_spd_multi;
+                return total_dps * battle_time;
+            }
+            function get_upgrade_cost(level, is_soul) {
+                const target = level + 1;
+                if (is_soul) {
+                    if (target <= 20) {
+                        return 500 + 100 * (target - 2);
+                    } else if (target <= 40) {
+                        return 2300 + 200 * (target - 20);
+                    } else if (target <= 60) {
+                        return 6300 + 400 * (target - 40);
+                    } else if (target <= 80) {
+                        return 14300 + 600 * (target - 60);
+                    } else if (target <= 100) {
+                        return 26300 + 800 * (target - 80);
+                    } else {
+                        return Infinity;
+                    }
+                } else {
+                    if (target === 2) return 1;
+                    if (target === 3) return 2;
+                    if (target === 4) return 3;
+                    if (target === 5) return 5;
+                    if (target === 6) return 7;
+                    if (target === 7) return 9;
+                    if (target === 8) return 12;
+                    if (target === 9) return 16;
+                    if (target >= 10) {
+                        return 20 + 5 * Math.max(0, Math.floor((target - 11) / 10));
+                    }
+                    return Infinity;
+                }
+            }
+            const seal_types = [
+                {
+                    name: 'atk',
+                    current_level: 1,
+                    current_value: current_seal_atk,
+                    dimension: 'atk',
+                    get_increment: function(level) {
+                        const target = level + 1;
+                        if (target <= 10) return 0.96;
+                        if (target <= 20) return 1.04;
+                        if (target <= 30) return 1.20;
+                        const band = Math.floor((target - 1) / 10) - 2;
+                        return 1.20 + 0.16 * band;
+                    }
+                },
+                {
+                    name: 'pal_dmg',
+                    current_level: 1,
+                    current_value: current_seal_pal_dmg,
+                    dimension: 'pal_dmg',
+                    get_increment: function(level) {
+                        const target = level + 1;
+                        if (target <= 10) return 3;
+                        if (target <= 20) return 3.25;
+                        const band = Math.floor((target - 1) / 10) - 1;
+                        return 3.25 + 0.5 * band;
+                    }
+                },
+                {
+                    name: 'pal_crit',
+                    current_level: 1,
+                    current_value: current_seal_pal_crit,
+                    dimension: 'pal_crit',
+                    get_increment: function(level) {
+                        const target = level + 1;
+                        if (target <= 10) return 2.8;
+                        if (target <= 20) return 3;
+                        const band = Math.floor((target - 1) / 10) - 1;
+                        return 3 + 0.5 * band;
+                    }
+                }
+            ];
+            while (true) {
+                let best_type = null;
+                let best_ratio = -Infinity;
+                let best_cost = 0;
+                for (let type of seal_types) {
+                    const cost = get_upgrade_cost(type.current_level, false);
+                    if (cost > seal_points_remaining || cost === Infinity) continue;
+                    const inc = type.get_increment(type.current_level);
+                    const current_obj = get_objective(current_soul_atk, current_seal_atk, current_soul_counter, current_seal_pal_dmg, current_soul_crit, current_seal_pal_crit);
+                    let temp_seal_atk = current_seal_atk;
+                    let temp_seal_pal_dmg = current_seal_pal_dmg;
+                    let temp_seal_pal_crit = current_seal_pal_crit;
+                    if (type.dimension === 'atk') temp_seal_atk += inc;
+                    if (type.dimension === 'pal_dmg') temp_seal_pal_dmg += inc;
+                    if (type.dimension === 'pal_crit') temp_seal_pal_crit += inc;
+                    const temp_obj = get_objective(current_soul_atk, temp_seal_atk, current_soul_counter, temp_seal_pal_dmg, current_soul_crit, temp_seal_pal_crit);
+                    const delta_f = temp_obj - current_obj;
+                    const ratio = delta_f / cost;
+                    if (ratio > best_ratio) {
+                        best_ratio = ratio;
+                        best_type = type;
+                        best_cost = cost;
+                    }
+                }
+                if (best_type === null) break;
+                seal_points_remaining -= best_cost;
+                const inc = best_type.get_increment(best_type.current_level);
+                best_type.current_value += inc;
+                best_type.current_level += 1;
+                if (best_type.dimension === 'atk') current_seal_atk = best_type.current_value;
+                if (best_type.dimension === 'pal_dmg') current_seal_pal_dmg = best_type.current_value;
+                if (best_type.dimension === 'pal_crit') current_seal_pal_crit = best_type.current_value;
+            }
+            seal_atk_level = seal_types[0].current_level;
+            seal_pal_dmg_level = seal_types[1].current_level;
+            seal_pal_crit_level = seal_types[2].current_level;
+            const soul_types = [
+                {
+                    name: 'atk',
+                    current_level: 1,
+                    current_value: current_soul_atk,
+                    dimension: 'atk',
+                    get_increment: function(level) {
+                        return 1.8;
+                    },
+                    max_level: 100
+                },
+                {
+                    name: 'counter',
+                    current_level: 1,
+                    current_value: current_soul_counter,
+                    dimension: 'pal_dmg',
+                    get_increment: function(level) {
+                        if (level === 1) return 4;
+                        if (level === 2) return 4;
+                        if (level === 3) return 4.20;
+                        if (level === 4) return 4;
+                        return 4.091;
+                    },
+                    max_level: 100
+                },
+                {
+                    name: 'crit',
+                    current_level: 1,
+                    current_value: current_soul_crit,
+                    dimension: 'pal_crit',
+                    get_increment: function(level) {
+                        if (level === 1) return 10.6;
+                        return 10.908;
+                    },
+                    max_level: 100
+                }
+            ];
+            while (true) {
+                let best_type = null;
+                let best_ratio = -Infinity;
+                let best_cost = 0;
+                for (let type of soul_types) {
+                    if (type.current_level >= type.max_level) continue;
+                    const cost = get_upgrade_cost(type.current_level, true);
+                    if (cost > soul_points_remaining || cost === Infinity) continue;
+                    const inc = type.get_increment(type.current_level);
+                    const current_obj = get_objective(current_soul_atk, current_seal_atk, current_soul_counter, current_seal_pal_dmg, current_soul_crit, current_seal_pal_crit);
+                    let temp_soul_atk = current_soul_atk;
+                    let temp_soul_counter = current_soul_counter;
+                    let temp_soul_crit = current_soul_crit;
+                    if (type.dimension === 'atk') temp_soul_atk += inc;
+                    if (type.dimension === 'pal_dmg') temp_soul_counter += inc;
+                    if (type.dimension === 'pal_crit') temp_soul_crit += inc;
+                    const temp_obj = get_objective(temp_soul_atk, current_seal_atk, temp_soul_counter, current_seal_pal_dmg, temp_soul_crit, current_seal_pal_crit);
+                    const delta_f = temp_obj - current_obj;
+                    const ratio = delta_f / cost;
+                    if (ratio > best_ratio) {
+                        best_ratio = ratio;
+                        best_type = type;
+                        best_cost = cost;
+                    }
+                }
+                if (best_type === null) break;
+                soul_points_remaining -= best_cost;
+                const inc = best_type.get_increment(best_type.current_level);
+                best_type.current_value += inc;
+                best_type.current_level += 1;
+                if (best_type.dimension === 'atk') current_soul_atk = best_type.current_value;
+                if (best_type.dimension === 'pal_dmg') current_soul_counter = best_type.current_value;
+                if (best_type.dimension === 'pal_crit') current_soul_crit = best_type.current_value;
+            }
+            soul_atk_level = soul_types[0].current_level;
+            soul_counter_level = soul_types[1].current_level;
+            soul_crit_level = soul_types[2].current_level;
+            const total_damage = get_total_damage(current_soul_atk, current_seal_atk, current_soul_counter, current_seal_pal_dmg, current_soul_crit, current_seal_pal_crit);
+            
+            // Красивый вывод результатов
+            document.getElementById('output').innerHTML = `
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3>Уровень атаки души</h3>
+                        <div class="result-value">${soul_atk_level}</div>
+                        <div class="result-description">Soul ATK Level</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3>Уровень контр-души</h3>
+                        <div class="result-value">${soul_counter_level}</div>
+                        <div class="result-description">Soul Counter (Pal DMG) Level</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3>Уровень критической души</h3>
+                        <div class="result-value">${soul_crit_level}</div>
+                        <div class="result-description">Soul Crit (Pal Crit) Level</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3>Уровень атаки печати</h3>
+                        <div class="result-value">${seal_atk_level}</div>
+                        <div class="result-description">Seal ATK Level</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3>Уровень урона печати</h3>
+                        <div class="result-value">${seal_pal_dmg_level}</div>
+                        <div class="result-description">Seal Pal DMG Level</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3>Уровень критической печати</h3>
+                        <div class="result-value">${seal_pal_crit_level}</div>
+                        <div class="result-description">Seal Pal Crit Level</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Функция для форматирования чисел в удобочитаемый вид
+        function formatNumber(num) {
+            // Проверяем, если число больше 1000 миллиардов, используем B
+            if (num >= 10000000000000) {
+                return (num / 1000000000000).toFixed(1) + 'T';
+            } else if (num >= 10000000000) {
+                return (num / 1000000000).toFixed(1) + 'B';
+            } else if (num >= 10000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            } else {
+                return num.toString();
+            }
+        }
+        
+        // Функция для обновления отображения формата числа
+        function updateNumberFormat(inputId, displayId) {
+            const input = document.getElementById(inputId);
+            const display = document.getElementById(displayId);
+            if (input && display) {
+                const value = parseFloat(input.value) || 0;
+                display.textContent = formatNumber(value);
+            }
+        }
+        
+        // Функция для добавления новой строки прислужника
+        function addPalRow() {
+            const tbody = document.getElementById('palsTableBody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input type="text" value="" class="pal-name" placeholder="Имя пета"></td>
+                <td><input type="number" value="0" step="0.0001" class="pal-damage"></td>
+                <td><input type="number" value="1" step="0.01" class="pal-speed"></td>
+                <td><input type="number" value="100" step="0.01" class="pal-crit"></td>
+                <td><button type="button" class="remove-pal-btn" onclick="removePalRow(this)">
+                    <i class="fas fa-trash"></i>
+                </button></td>
+            `;
+            tbody.appendChild(newRow);
+        }
+        
+        // Функция для удаления строки прислужника
+        function removePalRow(button) {
+            const row = button.closest('tr');
+            if (row && document.querySelectorAll('#palsTableBody tr').length > 1) {
+                row.remove();
+            }
+        }
+        
+        // Добавляем обработчик события для кнопки
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.querySelector('.calculate-btn');
+            if (calculateBtn) {
+                calculateBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    calculate();
+                });
+            }
+            
+            // Добавляем обработчики для автоматического обновления формата чисел
+            const numberInputs = [
+                { input: 'enemy_def', display: 'enemy_def_format' },
+                { input: 'soul_points', display: 'soul_points_format' },
+                { input: 'seal_points', display: 'seal_points_format' }
+            ];
+            
+            numberInputs.forEach(({ input, display }) => {
+                const inputElement = document.getElementById(input);
+                if (inputElement) {
+                    inputElement.addEventListener('input', () => {
+                        updateNumberFormat(input, display);
+                    });
+                    // Обновляем при загрузке страницы
+                    updateNumberFormat(input, display);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
