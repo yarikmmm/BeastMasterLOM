@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legend of Mushroom HP Damage Calculator</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .calculator-container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-title {
+            text-align: center;
+            margin: 0 auto 2rem auto;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            max-width: 800px;
+        }
+        
+        .form-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .input-group.hidden {
+            display: none;
+        }
+        
+        .field-group {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .groups-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .groups-container .field-group:last-child {
+            grid-column: 1 / -1;
+        }
+        
+        @media (max-width: 768px) {
+            .groups-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .field-group h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .input-group label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        
+        .input-group input,
+        .input-group textarea {
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .input-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .pals-table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+        
+        .pals-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pals-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .pals-table td {
+            padding: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .pals-table input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .pals-table input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+        }
+        
+        .add-pal-btn {
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .add-pal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .remove-pal-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .remove-pal-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .number-format-display {
+            font-size: 0.8rem;
+            color: #667eea;
+            font-weight: 600;
+            margin-top: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 5px;
+            text-align: center;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+        
+        .manual-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #667eea;
+        }
+        
+        .manual-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .manual-content {
+            color: #4b5563;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        .manual-content strong {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .calculate-btn {
+            width: 300px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .results-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .result-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .result-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-description {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        
+        .total-damage {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .total-damage h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .total-damage-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <h1 class="main-title">
+            Legend of Mushroom HP Damage Calculator
+        </h1>
+        
+        <div class="manual-section">
+            <div class="manual-title">
+                <i class="fas fa-info-circle"></i>
+                Инструкция по использованию
+            </div>
+            <div class="manual-content">
+                Калькулятор для расчета урона по %HP. Введите параметры персонажа, врага и настройки боя для получения оптимальных результатов.
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h2 class="section-title">Параметры персонажа</h2>
+            <form id="inputForm" onsubmit="return false;">
+                <div class="groups-container">
+                    <!-- Группа "Персонаж" -->
+                    <div class="field-group">
+                        <h3>👤 Персонаж</h3>
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label for="final_attack">Финальная атака (Final ATK):</label>
+                                <input type="number" id="final_attack" value="10000000000" placeholder="Введите число">
+                                <div class="number-format-display" id="final_attack_format">1.0M</div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="hp">HP:</label>
+                                <input type="number" id="hp" value="1200000000000" placeholder="Введите число">
+                                <div class="number-format-display" id="hp_format">1.0B</div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="pal_dmg">Урон прислужников (Pal DMG):</label>
+                                <input type="number" id="pal_dmg" value="1813">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="basic_attack_dmg">Базовый урон атаки (Basic Attack DMG):</label>
+                                <input type="number" id="basic_attack_dmg" value="100" step="0.01">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="pal_combo">Комбо петов (Pal Combo):</label>
+                                <input type="number" id="pal_combo" value="88.90" step="0.01">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="pal_crit">Крит петов (Pal Crit):</label>
+                                <input type="number" id="pal_crit" value="90.92" step="0.01">
+                            </div>
+                            
+                            <div class="input-group" style="grid-column: 1 / -1;">
+                                <label for="pals">Прислужники (Pals):</label>
+                                <div class="pals-table-container">
+                                    <table class="pals-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Имя пета</th>
+                                                <th>Урон</th>
+                                                <th>Скорость атаки</th>
+                                                <th>Крит урон</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="palsTableBody">
+                                            <tr>
+                                                <td><input type="text" value="AggHydrosprite" class="pal-name"></td>
+                                                <td><input type="number" value="19.4993" step="0.0001" class="pal-damage"></td>
+                                                <td><input type="number" value="1.16" step="0.01" class="pal-speed"></td>
+                                                <td><input type="number" value="5131.33" step="0.01" class="pal-crit"></td>
+                                                <td><button type="button" class="remove-pal-btn" onclick="removePalRow(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button></td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="text" value="TriHydrosprite" class="pal-name"></td>
+                                                <td><input type="number" value="20.8114" step="0.0001" class="pal-damage"></td>
+                                                <td><input type="number" value="1.16" step="0.01" class="pal-speed"></td>
+                                                <td><input type="number" value="5131.33" step="0.01" class="pal-crit"></td>
+                                                <td><button type="button" class="remove-pal-btn" onclick="removePalRow(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button></td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="text" value="DivineDeer" class="pal-name"></td>
+                                                <td><input type="number" value="18.7178" step="0.0001" class="pal-damage"></td>
+                                                <td><input type="number" value="1.23" step="0.01" class="pal-speed"></td>
+                                                <td><input type="number" value="5131.33" step="0.01" class="pal-crit"></td>
+                                                <td><button type="button" class="remove-pal-btn" onclick="removePalRow(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button></td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="text" value="MossSnail" class="pal-name"></td>
+                                                <td><input type="number" value="25.9986" step="0.0001" class="pal-damage"></td>
+                                                <td><input type="number" value="0.94" step="0.01" class="pal-speed"></td>
+                                                <td><input type="number" value="5131.33" step="0.01" class="pal-crit"></td>
+                                                <td><button type="button" class="remove-pal-btn" onclick="removePalRow(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button></td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="text" value="IceSnail" class="pal-name"></td>
+                                                <td><input type="number" value="26.4403" step="0.0001" class="pal-damage"></td>
+                                                <td><input type="number" value="0.94" step="0.01" class="pal-speed"></td>
+                                                <td><input type="number" value="5131.33" step="0.01" class="pal-crit"></td>
+                                                <td><button type="button" class="remove-pal-btn" onclick="removePalRow(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button type="button" class="add-pal-btn" onclick="addPalRow()">
+                                        <i class="fas fa-plus"></i> Добавить прислужника
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Группа "Враг" -->
+                    <div class="field-group">
+                        <h3>👹 Враг</h3>
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label for="enemy_hp">HP врага (Enemy HP):</label>
+                                <input type="number" id="enemy_hp" value="2000000000000" placeholder="Введите число">
+                                <div class="number-format-display" id="enemy_hp_format">1.0B</div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="enemy_def">Защита врага (Enemy DEF):</label>
+                                <input type="number" id="enemy_def" value="3000000000" placeholder="Введите число">
+                                <div class="number-format-display" id="enemy_def_format">1.0M</div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="enemy_pal_res">Сопротивление прислужникам врага (Enemy Pal RES):</label>
+                                <input type="number" id="enemy_pal_res" value="80">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="enemy_crit_res">Критическое сопротивление врага (Enemy Crit RES):</label>
+                                <input type="number" id="enemy_crit_res" value="3000">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="enemy_res">Общее сопротивление врага (Enemy RES):</label>
+                                <input type="number" id="enemy_res" value="50">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="enemy_ignore_combo">Игнорирование комбо врага (Enemy Ignore Combo):</label>
+                                <input type="number" id="enemy_ignore_combo" value="70">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="enemy_ignore_crit">Игнорирование критических ударов врага (Enemy Ignore Crit):</label>
+                                <input type="number" id="enemy_ignore_crit" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Группа "Настройки" -->
+                    <div class="field-group">
+                        <h3>⚙️ Настройки</h3>
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label for="battle_time">Время боя в секундах (Battle Time):</label>
+                                <input type="number" id="battle_time" value="60">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="pal_attack_speed_boost">Усиление скорости атаки петов (Pal Attack Speed Boost):</label>
+                                <input type="number" id="pal_attack_speed_boost" value="0" step="0.01">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="pvp_damage_reduction">PvP Damage Reduction:</label>
+                                <input type="number" id="pvp_damage_reduction" value="480">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div style="text-align: center; margin: 2rem 0; width: 100%;">
+            <button type="button" class="calculate-btn" onclick="calculate()">
+                <i class="fas fa-calculator"></i>
+                Рассчитать урон по %HP
+            </button>
+        </div>
+        
+        <div class="results-section">
+            <h2 class="section-title">Результаты расчета</h2>
+            <div id="output">
+                <p style="text-align: center; color: #6b7280; font-style: italic;">
+                    Нажмите кнопку "Рассчитать" для получения результатов
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            // Безопасное получение значений с проверкой на существование элементов
+            const getValue = (id, defaultValue = 0) => {
+                const element = document.getElementById(id);
+                return element ? parseFloat(element.value) || defaultValue : defaultValue;
+            };
+            
+            // Получаем основные параметры
+            const final_attack = getValue('final_attack', 1000000);
+            const hp = getValue('hp', 1000000000);
+            const pal_dmg = getValue('pal_dmg', 1813);
+            const basic_attack_dmg = getValue('basic_attack_dmg', 100);
+            const pal_combo = getValue('pal_combo', 88.90);
+            const pal_crit = getValue('pal_crit', 90.92);
+            const battle_time = getValue('battle_time', 60);
+            const pal_attack_speed_boost = getValue('pal_attack_speed_boost', 0);
+            const pvp_damage_reduction = getValue('pvp_damage_reduction', 480);
+            
+            // Получаем параметры врага
+            const enemy_hp = getValue('enemy_hp', 1000000000);
+            const enemy_def = getValue('enemy_def', 1000000);
+            const enemy_pal_res = getValue('enemy_pal_res', 80);
+            const enemy_crit_res = getValue('enemy_crit_res', 3000);
+            const enemy_res = getValue('enemy_res', 40);
+            const enemy_ignore_combo = getValue('enemy_ignore_combo', 50);
+            const enemy_ignore_crit = getValue('enemy_ignore_crit', 0);
+            
+            // Получаем данные из таблицы прислужников
+            const pals = [];
+            const tableRows = document.querySelectorAll('#palsTableBody tr');
+            for (let row of tableRows) {
+                const nameInput = row.querySelector('.pal-name');
+                const damageInput = row.querySelector('.pal-damage');
+                const speedInput = row.querySelector('.pal-speed');
+                const critInput = row.querySelector('.pal-crit');
+                
+                if (nameInput && damageInput && speedInput && critInput) {
+                    const name = nameInput.value.trim();
+                    const damage = parseFloat(damageInput.value) || 0;
+                    const speed = parseFloat(speedInput.value) || 0;
+                    const crit = parseFloat(critInput.value) || 0;
+                    
+                    if (name) {
+                        pals.push({
+                            name: name,
+                            damage: damage,
+                            speed: speed,
+                            crit_dmg: crit
+                        });
+                    }
+                }
+            }
+            
+            // Если нет прислужников в таблице, используем значения по умолчанию
+            if (pals.length === 0) {
+                pals.push({
+                    name: "DefaultPal",
+                    damage: 19.4993,
+                    speed: 1.16,
+                    crit_dmg: 5131.33
+                });
+            }
+            
+            // 1. Добавляем переменную final_pal_crit_rate
+            const final_pal_crit_rate = Math.max(0, pal_crit - enemy_ignore_crit);
+            
+            // 2. Добавляем переменную final_pal_combo_rate
+            const final_pal_combo_rate = Math.max(0, pal_combo - enemy_ignore_combo);
+            
+            // 3. Расчет эффективной атаки (одинакова для всех пета)
+            const effective_attack = Math.max(0, final_attack - enemy_def);
+            
+            // 4. Расчет урона для каждого пета
+            const palResults = [];
+            let total_damage_all_pals = 0;
+            let total_divine_verdict_damage = 0;
+            let total_divine_verdict_procs = 0;
+            
+            for (let pal of pals) {
+                // Расчет скорости атаки пета с учетом усиления
+                const pal_attacks_per_second = pal.speed * (1 + pal_attack_speed_boost / 100);
+                const total_attacks = pal_attacks_per_second * battle_time;
+                
+                // Расчет базового урона пета с учетом всех модификаторов
+                const pal_base_damage = effective_attack * pal.damage * (1 + pal_dmg / 100) * (1 - enemy_pal_res / 100) * (1 - enemy_res / 100);
+                
+                // Расчет критического урона
+                const crit_multiplier = Math.max(1.5, pal.crit_dmg / enemy_crit_res);
+                const pal_crit_damage = pal_base_damage * crit_multiplier;
+                
+                // Расчет среднего урона с учетом критических ударов
+                const crit_chance = final_pal_crit_rate / 100;
+                const average_damage_per_attack = pal_base_damage * (1 - crit_chance) + pal_crit_damage * crit_chance;
+                
+                // Расчет комбо ударов
+                const combo_chance = final_pal_combo_rate / 100;
+                const average_combo_damage = pal_base_damage * (1 - crit_chance) + pal_crit_damage * crit_chance;
+                const average_damage_with_combo = (average_damage_per_attack + (combo_chance * average_combo_damage)) / pvp_damage_reduction;
+                
+                // Общий урон пета за время боя
+                const total_pal_damage = average_damage_with_combo * total_attacks;
+                
+                // Расчет урона DivineVerdict для этого пета
+                const divine_verdict_chance = 0.15; // 15% вероятность
+                
+                // 1. Чистый урон от HP
+                const divine_hp_damage = enemy_hp * 0.01 * pvp_damage_reduction;
+                
+                // 2. Базовый урон DivineVerdict
+                const divine_basic_dmg = effective_attack * basic_attack_dmg / 100;
+                
+                // 3. Минимальный урон (80% от базового)
+                const divine_minimum_dmg = divine_basic_dmg * 0.8;
+                
+                // 4. Максимальный урон (100x от базового)
+                const divine_maximum_dmg = divine_basic_dmg * 100;
+                
+                // 5. Определяем реальный урон с ограничениями
+                let real_divine_dmg;
+                if (divine_hp_damage < divine_minimum_dmg) {
+                    real_divine_dmg = divine_minimum_dmg;
+                } else if (divine_hp_damage > divine_maximum_dmg) {
+                    real_divine_dmg = divine_maximum_dmg;
+                } else {
+                    real_divine_dmg = divine_hp_damage;
+                }
+                
+                // 6. Финальный урон с учетом PvP редукции
+                const divine_verdict_damage_per_hit = real_divine_dmg / pvp_damage_reduction;
+                
+                const divine_verdict_procs_per_pal = total_attacks * divine_verdict_chance; // Ожидаемое количество срабатываний
+                const divine_verdict_damage_per_pal = divine_verdict_procs_per_pal * divine_verdict_damage_per_hit;
+                
+                palResults.push({
+                    name: pal.name,
+                    damage: total_pal_damage,
+                    attacks: total_attacks,
+                    speed: pal.speed,
+                    base_damage: pal_base_damage,
+                    crit_damage: pal_crit_damage,
+                    crit_multiplier: crit_multiplier,
+                    average_damage: average_damage_with_combo,
+                    divine_verdict_damage: divine_verdict_damage_per_pal,
+                    divine_verdict_procs: divine_verdict_procs_per_pal,
+                    divine_verdict_damage_per_hit: divine_verdict_damage_per_hit,
+                    divine_basic_dmg: divine_basic_dmg,
+                    divine_minimum_dmg: divine_minimum_dmg,
+                    divine_maximum_dmg: divine_maximum_dmg,
+                    real_divine_dmg: real_divine_dmg
+                });
+                
+                total_damage_all_pals += total_pal_damage;
+                total_divine_verdict_damage += divine_verdict_damage_per_pal;
+                total_divine_verdict_procs += divine_verdict_procs_per_pal;
+            }
+            
+            // Создаем HTML для статистики пета
+            let palStatsHTML = '';
+            for (let result of palResults) {
+                palStatsHTML += `
+                    <div class="result-card">
+                        <h3>${result.name}</h3>
+                        <div class="result-value">${formatNumber(result.damage)}</div>
+                        <div class="result-description">
+                            <strong>Общий урон:</strong> ${formatNumber(result.damage)}<br>
+                            <strong>Атак за время:</strong> ${result.attacks.toFixed(1)} за ${battle_time}с<br>
+                            <strong>Скорость атаки:</strong> ${result.speed}/с<br>
+                            <strong>Базовый урон:</strong> ${formatNumber(result.base_damage)}<br>
+                            <strong>Крит урон:</strong> ${formatNumber(result.crit_damage)}<br>
+                            <strong>Крит множитель:</strong> ${result.crit_multiplier.toFixed(2)}x<br>
+                            <strong>Средний урон:</strong> ${formatNumber(result.average_damage)}<br>
+                            <strong>DivineVerdict урон:</strong> ${formatNumber(result.divine_verdict_damage)}<br>
+                            <strong>DivineVerdict срабатываний:</strong> ${result.divine_verdict_procs.toFixed(1)}<br>
+                            <strong>DivineVerdict за срабатывание:</strong> ${formatNumber(result.divine_verdict_damage_per_hit)}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Форматируем результаты
+            document.getElementById('output').innerHTML = `
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3>Финальный крит</h3>
+                        <div class="result-value">${final_pal_crit_rate.toFixed(2)}%</div>
+                        <div class="result-description">
+                            <strong>Базовый крит:</strong> ${pal_crit}%<br>
+                            <strong>Игнор крита врага:</strong> ${enemy_ignore_crit}%<br>
+                            <strong>Итоговый крит:</strong> ${final_pal_crit_rate.toFixed(2)}%
+                        </div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3>Финальный комбо</h3>
+                        <div class="result-value">${final_pal_combo_rate.toFixed(2)}%</div>
+                        <div class="result-description">
+                            <strong>Базовый комбо:</strong> ${pal_combo}%<br>
+                            <strong>Игнор комбо врага:</strong> ${enemy_ignore_combo}%<br>
+                            <strong>Итоговый комбо:</strong> ${final_pal_combo_rate.toFixed(2)}%
+                        </div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3>Эффективная атака</h3>
+                        <div class="result-value">${formatNumber(effective_attack)}</div>
+                        <div class="result-description">
+                            <strong>Финальная атака:</strong> ${formatNumber(final_attack)}<br>
+                            <strong>Защита врага:</strong> ${formatNumber(enemy_def)}<br>
+                            <strong>Эффективная атака:</strong> ${formatNumber(effective_attack)}
+                        </div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3>PvP Damage Reduction</h3>
+                        <div class="result-value">${pvp_damage_reduction}</div>
+                        <div class="result-description">
+                            <strong>PvP редукция:</strong> ${pvp_damage_reduction}<br>
+                            <strong>Множитель урона:</strong> 1/${pvp_damage_reduction}<br>
+                            <strong>Эффективность:</strong> ${(100/pvp_damage_reduction).toFixed(4)}%
+                        </div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3>DivineVerdict</h3>
+                        <div class="result-value">${formatNumber(total_divine_verdict_damage)}</div>
+                        <div class="result-description">
+                            <strong>Вероятность:</strong> 15% за атаку<br>
+                            <strong>HP урон (1%):</strong> ${formatNumber(enemy_hp * 0.01)}<br>
+                            <strong>Базовый урон:</strong> ${formatNumber(effective_attack * basic_attack_dmg / 100)}<br>
+                            <strong>Общее количество срабатываний:</strong> ${total_divine_verdict_procs.toFixed(1)}<br>
+                            <strong>Общий урон артефакта:</strong> ${formatNumber(total_divine_verdict_damage)}
+                        </div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3>Общий урон всех пета</h3>
+                        <div class="result-value">${formatNumber(total_damage_all_pals)}</div>
+                        <div class="result-description">
+                            <strong>Количество пета:</strong> ${pals.length}<br>
+                            <strong>Время боя:</strong> ${battle_time}с<br>
+                            <strong>Суммарный урон:</strong> ${formatNumber(total_damage_all_pals)}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <h3 style="text-align: center; margin-bottom: 1rem; color: #374151;">Статистика по пета</h3>
+                    <div class="results-grid">
+                        ${palStatsHTML}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Функция для форматирования чисел в удобочитаемый вид
+        function formatNumber(num) {
+            // Проверяем, если число больше 1000 миллиардов, используем B
+            if (num >= 10000000000000) {
+                return (num / 1000000000000).toFixed(1) + 'T';
+            } else if (num >= 10000000000) {
+                return (num / 1000000000).toFixed(1) + 'B';
+            } else if (num >= 10000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            } else {
+                return num.toString();
+            }
+        }
+        
+        // Функция для обновления отображения формата числа
+        function updateNumberFormat(inputId, displayId) {
+            const input = document.getElementById(inputId);
+            const display = document.getElementById(displayId);
+            if (input && display) {
+                const value = parseFloat(input.value) || 0;
+                display.textContent = formatNumber(value);
+            }
+        }
+        
+        // Функция для добавления новой строки прислужника
+        function addPalRow() {
+            const tbody = document.getElementById('palsTableBody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input type="text" value="" class="pal-name" placeholder="Имя пета"></td>
+                <td><input type="number" value="0" step="0.0001" class="pal-damage"></td>
+                <td><input type="number" value="1" step="0.01" class="pal-speed"></td>
+                <td><input type="number" value="100" step="0.01" class="pal-crit"></td>
+                <td><button type="button" class="remove-pal-btn" onclick="removePalRow(this)">
+                    <i class="fas fa-trash"></i>
+                </button></td>
+            `;
+            tbody.appendChild(newRow);
+        }
+        
+        // Функция для удаления строки прислужника
+        function removePalRow(button) {
+            const row = button.closest('tr');
+            if (row && document.querySelectorAll('#palsTableBody tr').length > 1) {
+                row.remove();
+            }
+        }
+        
+        // Функция для сохранения данных в localStorage
+        function saveFormData() {
+            const formData = {};
+            
+            // Собираем данные из всех полей формы
+            const inputs = document.querySelectorAll('#inputForm input[type="number"], #inputForm input[type="text"]');
+            inputs.forEach(input => {
+                if (input.id) {
+                    formData[input.id] = input.value;
+                }
+            });
+            
+            // Собираем данные из таблицы пета
+            const palData = [];
+            const tableRows = document.querySelectorAll('#palsTableBody tr');
+            for (let row of tableRows) {
+                const nameInput = row.querySelector('.pal-name');
+                const damageInput = row.querySelector('.pal-damage');
+                const speedInput = row.querySelector('.pal-speed');
+                const critInput = row.querySelector('.pal-crit');
+                
+                if (nameInput && damageInput && speedInput && critInput) {
+                    palData.push({
+                        name: nameInput.value,
+                        damage: damageInput.value,
+                        speed: speedInput.value,
+                        crit: critInput.value
+                    });
+                }
+            }
+            
+            formData.pals = palData;
+            
+            // Сохраняем в localStorage
+            localStorage.setItem('hp_damage_calculator_data', JSON.stringify(formData));
+        }
+        
+        // Функция для загрузки данных из localStorage
+        function loadFormData() {
+            const savedData = localStorage.getItem('hp_damage_calculator_data');
+            if (savedData) {
+                try {
+                    const formData = JSON.parse(savedData);
+                    
+                    // Загружаем данные в поля формы
+                    Object.keys(formData).forEach(key => {
+                        if (key !== 'pals') {
+                            const element = document.getElementById(key);
+                            if (element) {
+                                element.value = formData[key];
+                            }
+                        }
+                    });
+                    
+                    // Загружаем данные пета
+                    if (formData.pals && Array.isArray(formData.pals)) {
+                        const tbody = document.getElementById('palsTableBody');
+                        if (tbody) {
+                            // Очищаем существующие строки
+                            tbody.innerHTML = '';
+                            
+                            // Добавляем строки для каждого пета
+                            formData.pals.forEach((pal, index) => {
+                                const newRow = document.createElement('tr');
+                                newRow.innerHTML = `
+                                    <td><input type="text" value="${pal.name || ''}" class="pal-name" placeholder="Имя пета"></td>
+                                    <td><input type="number" value="${pal.damage || 0}" step="0.0001" class="pal-damage"></td>
+                                    <td><input type="number" value="${pal.speed || 1}" step="0.01" class="pal-speed"></td>
+                                    <td><input type="number" value="${pal.crit || 100}" step="0.01" class="pal-crit"></td>
+                                    <td><button type="button" class="remove-pal-btn" onclick="removePalRow(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button></td>
+                                `;
+                                tbody.appendChild(newRow);
+                            });
+                        }
+                    }
+                    
+                    // Обновляем форматирование чисел
+                    updateAllNumberFormats();
+                    
+                } catch (error) {
+                    console.error('Ошибка при загрузке сохраненных данных:', error);
+                }
+            }
+        }
+        
+        // Функция для обновления всех форматированных чисел
+        function updateAllNumberFormats() {
+            const numberInputs = [
+                { input: 'final_attack', display: 'final_attack_format' },
+                { input: 'hp', display: 'hp_format' },
+                { input: 'enemy_hp', display: 'enemy_hp_format' },
+                { input: 'enemy_def', display: 'enemy_def_format' }
+            ];
+            
+            numberInputs.forEach(({ input, display }) => {
+                updateNumberFormat(input, display);
+            });
+        }
+        
+        // Добавляем обработчик события для кнопки
+        document.addEventListener('DOMContentLoaded', function() {
+            // Загружаем сохраненные данные при загрузке страницы
+            loadFormData();
+            
+            const calculateBtn = document.querySelector('.calculate-btn');
+            if (calculateBtn) {
+                calculateBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    saveFormData(); // Сохраняем данные перед расчетом
+                    calculate();
+                });
+            }
+            
+            // Добавляем обработчики для автоматического обновления формата чисел
+            const numberInputs = [
+                { input: 'final_attack', display: 'final_attack_format' },
+                { input: 'hp', display: 'hp_format' },
+                { input: 'enemy_hp', display: 'enemy_hp_format' },
+                { input: 'enemy_def', display: 'enemy_def_format' }
+            ];
+            
+            numberInputs.forEach(({ input, display }) => {
+                const inputElement = document.getElementById(input);
+                if (inputElement) {
+                    inputElement.addEventListener('input', () => {
+                        updateNumberFormat(input, display);
+                        saveFormData(); // Автосохранение при изменении
+                    });
+                }
+            });
+            
+            // Добавляем автосохранение для всех полей формы
+            const allInputs = document.querySelectorAll('#inputForm input');
+            allInputs.forEach(input => {
+                input.addEventListener('input', saveFormData);
+                input.addEventListener('change', saveFormData);
+            });
+            
+            // Добавляем автосохранение для таблицы пета
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('pal-name') || 
+                    e.target.classList.contains('pal-damage') || 
+                    e.target.classList.contains('pal-speed') || 
+                    e.target.classList.contains('pal-crit')) {
+                    saveFormData();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
