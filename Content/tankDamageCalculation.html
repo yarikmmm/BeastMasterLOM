@@ -368,6 +368,7 @@
                      <select id="skill_selector" onchange="toggleFieldsBySkill()">
                          <option value="all">Все поля (по умолчанию)</option>
                          <option value="bee_avian">Bee Avian</option>
+                         <option value="draconic_resonance">Draconic Resonance</option>
                      </select>
                  </div>
              </div>
@@ -395,10 +396,15 @@
                                 <input type="number" id="pal_dmg" value="1813">
                             </div>
                             
-                            <div class="input-group">
-                                <label for="basic_attack_dmg">Базовый урон атаки (Basic Attack DMG):</label>
-                                <input type="number" id="basic_attack_dmg" value="100" step="0.01">
-                            </div>
+                             <div class="input-group">
+                                 <label for="basic_attack_dmg">Базовый урон атаки (Basic Attack DMG):</label>
+                                 <input type="number" id="basic_attack_dmg" value="100" step="0.01">
+                             </div>
+                             
+                             <div class="input-group">
+                                 <label for="dmg_res">DMG Res:</label>
+                                 <input type="number" id="dmg_res" value="0" step="0.01">
+                             </div>
                             
                             <div class="input-group">
                                 <label for="pal_combo">Комбо петов (Pal Combo):</label>
@@ -565,6 +571,17 @@
                              </div>
                          </div>
                      </div>
+                     
+                     <!-- Группа "Draconic Resonance" -->
+                     <div class="field-group">
+                         <h3>🐉 Draconic Resonance</h3>
+                         <div class="form-grid">
+                             <div class="input-group">
+                                 <label for="draconic_damage">Draconic Damage:</label>
+                                 <input type="number" id="draconic_damage" value="2" step="0.01">
+                             </div>
+                         </div>
+                     </div>
                 </div>
             </form>
         </div>
@@ -572,21 +589,82 @@
          <div style="text-align: center; margin: 2rem 0; width: 100%;">
              <button type="button" class="calculate-btn" onclick="calculateBeeDamage()">
                  <i class="fas fa-calculator"></i>
-                 Bee Damage Calculation
+                 Damage Calculation
              </button>
          </div>
         
         <div class="results-section">
             <h2 class="section-title">Результаты расчета</h2>
-            <div id="output">
-                <p style="text-align: center; color: #6b7280; font-style: italic;">
-                    Нажмите кнопку "Bee Damage Calculation" для получения результатов
-                </p>
-            </div>
+             <div id="output">
+                 <p style="text-align: center; color: #6b7280; font-style: italic;">
+                     Нажмите кнопку "Damage Calculation" для получения результатов
+                 </p>
+             </div>
         </div>
     </div>
 
     <script>
+         function calculateDraconicResonance() {
+             // Безопасное получение значений с проверкой на существование элементов
+             const getValue = (id, defaultValue = 0) => {
+                 const element = document.getElementById(id);
+                 return element ? parseFloat(element.value) || defaultValue : defaultValue;
+             };
+             
+             // Получаем константы из видимых полей для Draconic Resonance
+             const final_attack = getValue('final_attack', 1000000);
+             const dmg_res = getValue('dmg_res', 0);
+             const enemy_hp = getValue('enemy_hp', 1000000000);
+             const enemy_def = getValue('enemy_def', 1000000);
+             const basic_attack_dmg = getValue('basic_attack_dmg', 100);
+             const draconic_damage = getValue('draconic_damage', 2);
+             const pvp_damage_reduction = getValue('pvp_damage_reduction', 480);
+             
+             // Расчет урона Draconic Resonance
+             const full_hp_damage = draconic_damage + (dmg_res / 10);
+             const hpDamage = enemy_hp * (full_hp_damage / 100) * pvp_damage_reduction;
+             const draconic_basic_damage = (final_attack - enemy_def) * basic_attack_dmg / 100;
+             const draconic_minimum_damage = draconic_basic_damage * 0.8;
+             const draconic_maximum_damage = draconic_basic_damage * 500;
+             
+             // Определяем реальный урон
+             let draconic_real_damage;
+             if (hpDamage < draconic_minimum_damage) {
+                draconic_real_damage = draconic_minimum_damage;
+             } else if (hpDamage > draconic_maximum_damage) {
+                draconic_real_damage = draconic_maximum_damage;
+             } else {
+                draconic_real_damage = hpDamage;
+             }
+             
+             const draconic_final_damage = draconic_real_damage / pvp_damage_reduction;
+             const hp_percentage = (draconic_final_damage / enemy_hp) * 100;
+
+             // Сравнение hpDamage с draconic_maximum_damage
+             const hpDamageComparison = hpDamage > draconic_maximum_damage ? 
+                 `HP Damage (${formatNumber(hpDamage)}) > Максимальный урон (${formatNumber(draconic_maximum_damage)})` :
+                 `HP Damage (${formatNumber(hpDamage)}) ≤ Максимальный урон (${formatNumber(draconic_maximum_damage)})`;
+
+             document.getElementById('output').innerHTML = `
+                 <div class="results-grid">
+                     <div class="result-card" style="grid-column: 1 / -1; text-align: left;">
+                         <h3>🐉 Draconic Resonance Damage Analysis</h3>
+                         <div class="result-description" style="text-align: left; line-height: 1.8;">
+                             <strong>HP Damage (${full_hp_damage.toFixed(2)}%):</strong> ${formatNumber(enemy_hp * (full_hp_damage / 100))} - HP damage from 'enemy_hp'<br>
+                             <strong>С учетом Pvp Reduction:</strong> ${formatNumber(hpDamage)}<br>
+                             <strong>Базовый урон:</strong> ${formatNumber(draconic_basic_damage)}<br>
+                             <strong>Минимальный урон:</strong> ${formatNumber(draconic_minimum_damage)} (80% от базового)<br>
+                             <strong>Максимальный урон:</strong> ${formatNumber(draconic_maximum_damage)} (50000% от базового)<br>
+                             <strong>Реальный урон:</strong> ${formatNumber(draconic_real_damage)}<br>
+                             <strong>Реальный урон с Pvp Reduction:</strong> ${formatNumber(draconic_final_damage)}<br>
+                             <strong>% от HP:</strong> ${hp_percentage.toFixed(2)}%<br>
+                             <strong>Сравнение:</strong> ${hpDamageComparison}
+                         </div>
+                     </div>
+                 </div>
+             `;
+         }
+         
          function calculateBeeDamage() {
              // Безопасное получение значений с проверкой на существование элементов
              const getValue = (id, defaultValue = 0) => {
@@ -907,6 +985,55 @@
                      beeAvianGroup.style.display = 'block';
                  }
                  
+             } else if (selectedSkill === 'draconic_resonance') {
+                 // Для Draconic Resonance показываем только нужные поля
+                 
+                 // В группе Персонаж оставляем только: final_attack, dmg_res, basic_attack_dmg
+                 if (characterGroup) {
+                     const inputs = characterGroup.querySelectorAll('.input-group');
+                     inputs.forEach(inputGroup => {
+                         const input = inputGroup.querySelector('input');
+                         if (input) {
+                             const inputId = input.id;
+                             if (['final_attack', 'dmg_res', 'basic_attack_dmg'].includes(inputId)) {
+                                 inputGroup.style.display = 'flex';
+                             } else {
+                                 inputGroup.style.display = 'none';
+                             }
+                         }
+                     });
+                 }
+                 
+                 // В группе Враг оставляем только: enemy_hp, enemy_def
+                 if (enemyGroup) {
+                     const inputs = enemyGroup.querySelectorAll('.input-group');
+                     inputs.forEach(inputGroup => {
+                         const input = inputGroup.querySelector('input');
+                         if (input) {
+                             const inputId = input.id;
+                             if (['enemy_hp', 'enemy_def'].includes(inputId)) {
+                                 inputGroup.style.display = 'flex';
+                             } else {
+                                 inputGroup.style.display = 'none';
+                             }
+                         }
+                     });
+                 }
+                 
+                 // Скрываем все остальные группы
+                 if (settingsGroup) {
+                     settingsGroup.style.display = 'none';
+                 }
+                 if (beeAvianGroup) {
+                     beeAvianGroup.style.display = 'none';
+                 }
+                 
+                 // Показываем группу Draconic Resonance
+                 const draconicResonanceGroup = fieldGroups[5]; // Шестая группа
+                 if (draconicResonanceGroup) {
+                     draconicResonanceGroup.style.display = 'block';
+                 }
+                 
              } else if (selectedSkill === 'all') {
                  // Показываем все поля
                  document.querySelectorAll('.input-group').forEach(inputGroup => {
@@ -1000,7 +1127,27 @@
                  calculateBtn.addEventListener('click', function(e) {
                      e.preventDefault();
                      saveFormData(); // Сохраняем данные перед расчетом
-                     calculateBeeDamage();
+                     
+                     // Вызываем правильную функцию в зависимости от выбранного скилла
+                     const skillSelector = document.getElementById('skill_selector');
+                     const selectedSkill = skillSelector.value;
+                     
+                     if (selectedSkill === 'bee_avian') {
+                         calculateBeeDamage();
+                     } else if (selectedSkill === 'draconic_resonance') {
+                         calculateDraconicResonance();
+                     } else {
+                         // Для "all" или других скиллов показываем заглушку
+                         document.getElementById('output').innerHTML = `
+                             <div class="results-grid">
+                                 <div class="result-card">
+                                     <h3>Выберите скилл</h3>
+                                     <div class="result-value">В процессе</div>
+                                     <div class="result-description">Выберите конкретный скилл для расчета урона</div>
+                                 </div>
+                             </div>
+                         `;
+                     }
                  });
              }
             
